@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,6 +37,13 @@ fun LoginScreen(onIngresar: () -> Unit) {
     var clave by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
 
+    // Surface pinta el fondo que define el tema. Sin el, la pantalla queda
+    // sobre un fondo sin color mientras el texto si toma el color del tema:
+    // en modo oscuro eso da letras blancas sobre fondo blanco.
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,5 +95,6 @@ fun LoginScreen(onIngresar: () -> Unit) {
         ) {
             Text("Ingresar")
         }
+    }
     }
 }
