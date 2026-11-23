@@ -50,6 +50,12 @@ class SolicitudViewModel(
     private val _uiState = MutableStateFlow(SolicitudUiState())
     val uiState: StateFlow<SolicitudUiState> = _uiState.asStateFlow()
 
+    init {
+        // Al crearse el ViewModel se intenta sincronizar con el servidor.
+        // Si no hay red no pasa nada: la UI sigue mostrando lo de Room.
+        viewModelScope.launch { repositorio.sincronizar() }
+    }
+
     // ------------------------------------------------------------------
     // Eventos que llegan desde la pantalla
     // ------------------------------------------------------------------

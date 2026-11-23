@@ -13,7 +13,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -52,6 +58,28 @@ fun ListaSolicitudesScreen(
     // collectAsStateWithLifecycle observa el StateFlow solo mientras la
     // pantalla esta visible, para no gastar recursos en segundo plano.
     val solicitudes by viewModel.solicitudes.collectAsStateWithLifecycle()
+
+    // Solicitud que el usuario quiere borrar; null = ningun dialogo abierto.
+    var solicitudAEliminar by remember { mutableStateOf<SolicitudEntity?>(null) }
+
+    solicitudAEliminar?.let { solicitud ->
+        AlertDialog(
+            onDismissRequest = { solicitudAEliminar = null },
+            title = { Text("Eliminar solicitud") },
+            text = {
+                Text("Se eliminara ${solicitud.codigo} (${solicitud.titulo}). Esta accion no se puede deshacer.")
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.eliminar(solicitud)
+                    solicitudAEliminar = null
+                }) { Text("Eliminar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { solicitudAEliminar = null }) { Text("Cancelar") }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -101,7 +129,8 @@ fun ListaSolicitudesScreen(
                 items(solicitudes, key = { it.id }) { solicitud ->
                     TarjetaSolicitud(
                         solicitud = solicitud,
-                        onClick = { onEditarSolicitud(solicitud.id) }
+                        onClick = { onEditarSolicitud(solicitud.id) },
+                        onEliminar = { solicitudAEliminar = solicitud }
                     )
                 }
             }
@@ -114,7 +143,8 @@ fun ListaSolicitudesScreen(
 @Composable
 private fun TarjetaSolicitud(
     solicitud: SolicitudEntity,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onEliminar: () -> Unit
 ) {
     val formato = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
@@ -156,10 +186,23 @@ private fun TarjetaSolicitud(
 
             Spacer(Modifier.height(4.dp))
 
-            Text(
-                text = formato.format(Date(solicitud.fechaCreacion)),
-                style = MaterialTheme.typography.bodySmall
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = formato.format(Date(solicitud.fechaCreacion)),
+                    style = MaterialTheme.typography.bodySmall
+                )
+                IconButton(onClick = onEliminar) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Eliminar solicitud",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
         }
     }
 }

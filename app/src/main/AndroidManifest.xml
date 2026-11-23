@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permiso necesario para hacer peticiones HTTP a la API. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Declara que la app aprovecha la camara pero puede instalarse sin ella. -->
     <uses-feature
         android:name="android.hardware.camera"

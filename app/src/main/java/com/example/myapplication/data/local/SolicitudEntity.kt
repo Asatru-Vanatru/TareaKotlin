@@ -36,5 +36,11 @@ data class SolicitudEntity(
     val estado: String = "Recibida",
 
     /** Fecha y hora de creacion, en milisegundos. */
-    val fechaCreacion: Long = System.currentTimeMillis()
+    val fechaCreacion: Long = System.currentTimeMillis(),
+
+    /**
+     * "_id" del documento en MongoDB. Null mientras la solicitud no se haya
+     * enviado al servidor (queda pendiente de sincronizar).
+     */
+    val remoteId: String? = null
 )
