@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MenuScreen(
     onIrASolicitudes: () -> Unit,
+    onIrAPosts: () -> Unit,
     onCerrarSesion: () -> Unit
 ) {
     Scaffold(
@@ -53,6 +54,13 @@ fun MenuScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Solicitudes")
+            }
+
+            Button(
+                onClick = onIrAPosts,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Posts (API REST)")
             }
 
             OutlinedButton(
