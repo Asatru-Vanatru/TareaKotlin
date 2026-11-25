@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -24,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +66,13 @@ fun PostContent(
 ) {
     var creando by rememberSaveable { mutableStateOf(false) }
     var enEdicion by remember { mutableStateOf<Post?>(null) }
+    val estadoLista = rememberLazyListState()
+
+    // Un post nuevo entra al inicio: se sube la lista para que quede a la vista.
+    val primerId = estado.posts.firstOrNull()?.id
+    LaunchedEffect(primerId) {
+        if (estado.mensaje == "Post creado") estadoLista.scrollToItem(0)
+    }
 
     Scaffold(
         topBar = {
@@ -100,6 +109,7 @@ fun PostContent(
             }
 
             LazyColumn(
+                state = estadoLista,
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
