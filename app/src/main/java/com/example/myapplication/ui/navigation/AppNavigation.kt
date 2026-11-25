@@ -9,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.ui.login.LoginScreen
 import com.example.myapplication.ui.menu.MenuScreen
+import com.example.myapplication.ui.screens.PostScreen
+import com.example.myapplication.viewmodel.PostViewModel
 import com.example.myapplication.ui.solicitud.ListaSolicitudesScreen
 import com.example.myapplication.ui.solicitud.SolicitudFormScreen
 import com.example.myapplication.ui.solicitud.SolicitudViewModel
@@ -21,6 +23,7 @@ object Rutas {
     const val MENU = "menu"
     const val LISTA = "lista"
     const val FORMULARIO = "formulario"
+    const val POSTS = "posts"
 }
 
 /**
@@ -55,11 +58,20 @@ fun AppNavigation() {
         composable(Rutas.MENU) {
             MenuScreen(
                 onIrASolicitudes = { navController.navigate(Rutas.LISTA) },
+                onIrAPosts = { navController.navigate(Rutas.POSTS) },
                 onCerrarSesion = {
                     navController.navigate(Rutas.LOGIN) {
                         popUpTo(Rutas.MENU) { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable(Rutas.POSTS) {
+            val viewModel: PostViewModel = viewModel()
+            PostScreen(
+                viewModel = viewModel,
+                onVolver = { navController.popBackStack() }
             )
         }
 
