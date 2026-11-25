@@ -88,11 +88,12 @@ fun LoginScreen(onIngresar: () -> Unit) {
 
             Spacer(Modifier.height(24.dp))
 
+
             Button(
                 onClick = {
-                    if (usuario.isBlank() || clave.isBlank()) {
-                        error = "Debe completar usuario y contraseña"
-                    } else {
+                    error = validarCamposLogin(usuario, clave)
+
+                    if (error == null) {
                         onIngresar()
                     }
                 },
@@ -100,6 +101,7 @@ fun LoginScreen(onIngresar: () -> Unit) {
             ) {
                 Text("Ingresar")
             }
+
         }
     }
 }
