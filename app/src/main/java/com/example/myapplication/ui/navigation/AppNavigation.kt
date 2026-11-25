@@ -14,6 +14,7 @@ import com.example.myapplication.viewmodel.PostViewModel
 import com.example.myapplication.ui.solicitud.ListaSolicitudesScreen
 import com.example.myapplication.ui.solicitud.SolicitudFormScreen
 import com.example.myapplication.ui.solicitud.SolicitudViewModel
+import com.example.myapplication.ui.historial.HistorialScreen
 
 /**
  * Rutas de la aplicacion, centralizadas para no repetir textos sueltos.
@@ -24,6 +25,8 @@ object Rutas {
     const val LISTA = "lista"
     const val FORMULARIO = "formulario"
     const val POSTS = "posts"
+
+    const val HISTORIAL = "historial"
 }
 
 /**
@@ -59,11 +62,21 @@ fun AppNavigation() {
             MenuScreen(
                 onIrASolicitudes = { navController.navigate(Rutas.LISTA) },
                 onIrAPosts = { navController.navigate(Rutas.POSTS) },
+                onIrAHistorial = { navController.navigate(Rutas.HISTORIAL) },
                 onCerrarSesion = {
                     navController.navigate(Rutas.LOGIN) {
                         popUpTo(Rutas.MENU) { inclusive = true }
                     }
                 }
+            )
+        }
+        composable(Rutas.HISTORIAL) {
+            val viewModel: SolicitudViewModel =
+                viewModel(factory = SolicitudViewModel.Factory)
+
+            HistorialScreen(
+                viewModel = viewModel,
+                onVolver = { navController.popBackStack() }
             )
         }
 

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 fun MenuScreen(
     onIrASolicitudes: () -> Unit,
     onIrAPosts: () -> Unit,
+    onIrAHistorial: () -> Unit,
     onCerrarSesion: () -> Unit
 ) {
     Scaffold(
@@ -71,12 +72,11 @@ fun MenuScreen(
                 Text("Seguimiento (proxima entrega)")
             }
 
-            OutlinedButton(
-                onClick = {},
-                enabled = false,
+            Button(
+                onClick = onIrAHistorial,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Historial (proxima entrega)")
+                Text("Historial")
             }
 
             Spacer(Modifier.height(24.dp))
