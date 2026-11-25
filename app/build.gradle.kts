@@ -52,11 +52,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.7.1")
     ksp("androidx.room:room-compiler:2.7.1")
 
-    // --- Consumo de la API REST (backend con MongoDB) ---
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
     // --- Navegacion entre pantallas ---
     implementation("androidx.navigation:navigation-compose:2.8.5")
 

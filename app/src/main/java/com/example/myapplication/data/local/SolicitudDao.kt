@@ -24,13 +24,6 @@ interface SolicitudDao {
     @Query("SELECT * FROM solicitudes WHERE id = :id")
     suspend fun obtenerPorId(id: Long): SolicitudEntity?
 
-    @Query("SELECT * FROM solicitudes WHERE remoteId = :remoteId LIMIT 1")
-    suspend fun obtenerPorRemoteId(remoteId: String): SolicitudEntity?
-
-    /** Solicitudes creadas sin conexion que aun no llegan al servidor. */
-    @Query("SELECT * FROM solicitudes WHERE remoteId IS NULL")
-    suspend fun obtenerPendientes(): List<SolicitudEntity>
-
     @Insert
     suspend fun insertar(solicitud: SolicitudEntity): Long
 

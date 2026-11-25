@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 
 /**
  * Base de datos local de la aplicacion.
@@ -20,7 +18,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  */
 @Database(
     entities = [SolicitudEntity::class],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -32,13 +30,6 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCIA: AppDatabase? = null
 
-        /** v1 -> v2: agrega remoteId (el _id de MongoDB) sin perder los datos locales. */
-        private val MIGRACION_1_2 = object : Migration(1, 2) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE solicitudes ADD COLUMN remoteId TEXT")
-            }
-        }
-
         fun obtenerInstancia(context: Context): AppDatabase {
             // Si ya existe se devuelve; si no, se crea dentro de un bloque
             // sincronizado para que dos hilos no la creen al mismo tiempo.
@@ -47,7 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "solicitudes.db"
-                ).addMigrations(MIGRACION_1_2).build()
+                ).build()
                 INSTANCIA = instancia
                 instancia
             }

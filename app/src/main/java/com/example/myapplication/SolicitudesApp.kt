@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.app.Application
 import com.example.myapplication.data.local.AppDatabase
-import com.example.myapplication.data.remote.RetrofitInstance
 import com.example.myapplication.data.repository.SolicitudRepository
 
 /**
@@ -19,5 +18,5 @@ class SolicitudesApp : Application() {
 
     private val baseDeDatos by lazy { AppDatabase.obtenerInstancia(this) }
 
-    val repositorio by lazy { SolicitudRepository(baseDeDatos.solicitudDao(), RetrofitInstance.api) }
+    val repositorio by lazy { SolicitudRepository(baseDeDatos.solicitudDao()) }
 }
