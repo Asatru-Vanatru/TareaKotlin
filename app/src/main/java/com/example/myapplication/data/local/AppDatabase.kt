@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 /**
  * Base de datos local de la aplicacion.
@@ -27,7 +29,19 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun historialDao(): HistorialDao
 
     companion object {
-
+        private val MIGRATION_1_2 = object : Migration(1,2){
+            override fun migrate(db: SupportSQLiteDatabase){
+                db.execSQL("""CREATE TABLE IF NOT EXISTS historial (
+                                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                solicitudId INTEGER NOT NULL,
+                                estadoAnterior TEXT NOT NULL,
+                                estadoNuevo TEXT NOT NULL,
+                                comentario TEXT NOT NULL,
+                                fecha INTEGER NOT NULL
+                            )
+                        """.trimIndent())
+            }
+        }
         @Volatile
         private var INSTANCIA: AppDatabase? = null
 
@@ -39,7 +53,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "solicitudes.db"
-                ).build()
+                )
+                    .addMigrations(MIGRATION_1_2)
+                    .build()
                 INSTANCIA = instancia
                 instancia
             }

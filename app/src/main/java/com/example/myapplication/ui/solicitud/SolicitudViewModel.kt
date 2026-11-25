@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.myapplication.SolicitudesApp
 import com.example.myapplication.data.local.SolicitudEntity
+import com.example.myapplication.data.local.HistorialEntity
 import com.example.myapplication.data.repository.SolicitudRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -41,6 +42,13 @@ class SolicitudViewModel(
      */
     val solicitudes: StateFlow<List<SolicitudEntity>> =
         repositorio.solicitudes.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
+
+    val historial: StateFlow<List<HistorialEntity>> =
+        repositorio.historial.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()

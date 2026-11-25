@@ -18,5 +18,8 @@ class SolicitudesApp : Application() {
 
     private val baseDeDatos by lazy { AppDatabase.obtenerInstancia(this) }
 
-    val repositorio by lazy { SolicitudRepository(baseDeDatos.solicitudDao()) }
+    val repositorio by lazy { SolicitudRepository(
+        baseDeDatos.solicitudDao(),
+        baseDeDatos.historialDao(),
+        baseDeDatos) }
 }
