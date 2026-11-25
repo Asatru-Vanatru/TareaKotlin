@@ -17,13 +17,14 @@ import androidx.room.RoomDatabase
  * lista en memoria.
  */
 @Database(
-    entities = [SolicitudEntity::class],
-    version = 1,
+    entities = [SolicitudEntity::class, HistorialEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun solicitudDao(): SolicitudDao
+    abstract fun historialDao(): HistorialDao
 
     companion object {
 
