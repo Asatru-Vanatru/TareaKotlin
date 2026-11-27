@@ -17,7 +17,7 @@ class LoginScreenTest {
     @Test
     fun muestraElementosDelLogin() {
         composeTestRule.setContent {
-            LoginScreen(onIngresar = {})
+            LoginScreen(onIngresar = { _, _ -> })
         }
 
         composeTestRule.onNodeWithText("Gestión de Solicitudes")
@@ -36,7 +36,7 @@ class LoginScreenTest {
     @Test
     fun camposVacios_muestraError() {
         composeTestRule.setContent {
-            LoginScreen(onIngresar = {})
+            LoginScreen(onIngresar = { _, _ -> })
         }
 
         composeTestRule.onNodeWithText("Ingresar").performClick()
@@ -52,7 +52,7 @@ class LoginScreenTest {
 
         composeTestRule.setContent {
             LoginScreen(
-                onIngresar = { ingresoEjecutado = true }
+                onIngresar = { _, _ -> ingresoEjecutado = true }
             )
         }
 
