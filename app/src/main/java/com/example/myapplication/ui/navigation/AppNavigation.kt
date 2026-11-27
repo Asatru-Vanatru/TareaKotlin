@@ -1,6 +1,13 @@
 package com.example.myapplication.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.myapplication.ui.roles.RolesScreen
+import com.example.myapplication.ui.roles.RolesViewModel
+import com.example.myapplication.ui.sesion.SesionViewModel
+import com.example.myapplication.ui.tecnico.PanelTecnicoScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -27,6 +34,8 @@ object Rutas {
     const val POSTS = "posts"
 
     const val HISTORIAL = "historial"
+    const val PANEL_TECNICO = "panelTecnico"
+    const val ROLES = "roles"
 }
 
 /**
@@ -41,35 +50,72 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
 
+    // Se crea fuera del NavHost para que todas las pantallas compartan sesion.
+    val sesionViewModel: SesionViewModel = viewModel(factory = SesionViewModel.Factory)
+    val sesion by sesionViewModel.uiState.collectAsStateWithLifecycle()
+    val usuario = sesion.usuario
+
     NavHost(
         navController = navController,
         startDestination = Rutas.LOGIN
     ) {
 
         composable(Rutas.LOGIN) {
-            LoginScreen(
-                onIngresar = {
+            LaunchedEffect(usuario != null) {
+                if (usuario != null) {
                     navController.navigate(Rutas.MENU) {
                         // popUpTo evita que el boton Atras devuelva al login
                         // una vez que el usuario ya ingreso.
                         popUpTo(Rutas.LOGIN) { inclusive = true }
                     }
                 }
+            }
+
+            LoginScreen(
+                onIngresar = sesionViewModel::iniciarSesion,
+                errorIngreso = sesion.error,
+                ingresando = sesion.ingresando,
+                onEditar = sesionViewModel::limpiarError
             )
         }
 
         composable(Rutas.MENU) {
+            if (usuario == null) return@composable
+
             MenuScreen(
+                nombreUsuario = usuario.nombre,
+                rol = usuario.rol,
+                onIrAPanelTecnico = { navController.navigate(Rutas.PANEL_TECNICO) },
+                onIrAAdministrarRoles = { navController.navigate(Rutas.ROLES) },
                 onIrASolicitudes = { navController.navigate(Rutas.LISTA) },
                 onIrAPosts = { navController.navigate(Rutas.POSTS) },
                 onIrAHistorial = { navController.navigate(Rutas.HISTORIAL) },
                 onCerrarSesion = {
+                    sesionViewModel.cerrarSesion()
                     navController.navigate(Rutas.LOGIN) {
                         popUpTo(Rutas.MENU) { inclusive = true }
                     }
                 }
             )
         }
+        composable(Rutas.PANEL_TECNICO) {
+            if (usuario?.rol?.vePanelTecnico == true) {
+                PanelTecnicoScreen(onVolver = { navController.popBackStack() })
+            }
+        }
+
+        composable(Rutas.ROLES) {
+            if (usuario?.rol?.administraRoles == true) {
+                val viewModel: RolesViewModel = viewModel(factory = RolesViewModel.Factory)
+
+                RolesScreen(
+                    viewModel = viewModel,
+                    actor = usuario,
+                    onVolver = { navController.popBackStack() }
+                )
+            }
+        }
+
         composable(Rutas.HISTORIAL) {
             val viewModel: SolicitudViewModel =
                 viewModel(factory = SolicitudViewModel.Factory)

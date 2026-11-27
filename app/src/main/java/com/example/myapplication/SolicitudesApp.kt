@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.app.Application
 import com.example.myapplication.data.local.AppDatabase
 import com.example.myapplication.data.repository.SolicitudRepository
+import com.example.myapplication.data.repository.UsuarioRepository
 
 /**
  * Clase Application de la app.
@@ -22,4 +23,6 @@ class SolicitudesApp : Application() {
         baseDeDatos.solicitudDao(),
         baseDeDatos.historialDao(),
         baseDeDatos) }
+
+    val repositorioUsuarios by lazy { UsuarioRepository(baseDeDatos.usuarioDao()) }
 }

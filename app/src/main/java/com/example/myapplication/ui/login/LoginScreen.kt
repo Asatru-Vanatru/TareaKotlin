@@ -25,15 +25,21 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Pantalla de ingreso.
- * Valida que los campos no estén vacíos.
- * La autenticación real queda para el EFT.
+ * Valida que los campos no estén vacíos y entrega las credenciales; quien la
+ * usa las comprueba contra la base local y devuelve el error si no coinciden.
  */
 @Composable
-fun LoginScreen(onIngresar: () -> Unit) {
+fun LoginScreen(
+    onIngresar: (usuario: String, clave: String) -> Unit,
+    errorIngreso: String? = null,
+    ingresando: Boolean = false,
+    onEditar: () -> Unit = {}
+) {
 
     var usuario by rememberSaveable { mutableStateOf("") }
     var clave by rememberSaveable { mutableStateOf("") }
-    var error by rememberSaveable { mutableStateOf<String?>(null) }
+    var errorCampos by rememberSaveable { mutableStateOf<String?>(null) }
+    val error = errorCampos ?: errorIngreso
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -58,7 +64,8 @@ fun LoginScreen(onIngresar: () -> Unit) {
                 value = usuario,
                 onValueChange = {
                     usuario = it
-                    error = null
+                    errorCampos = null
+                    onEditar()
                 },
                 label = { Text("Usuario") },
                 isError = error != null,
@@ -72,13 +79,14 @@ fun LoginScreen(onIngresar: () -> Unit) {
                 value = clave,
                 onValueChange = {
                     clave = it
-                    error = null
+                    errorCampos = null
+                    onEditar()
                 },
                 label = { Text("Contraseña") },
                 isError = error != null,
                 supportingText = {
                     if (error != null) {
-                        Text(error!!)
+                        Text(error)
                     }
                 },
                 visualTransformation = PasswordVisualTransformation(),
@@ -91,12 +99,13 @@ fun LoginScreen(onIngresar: () -> Unit) {
 
             Button(
                 onClick = {
-                    error = validarCamposLogin(usuario, clave)
+                    errorCampos = validarCamposLogin(usuario, clave)
 
-                    if (error == null) {
-                        onIngresar()
+                    if (errorCampos == null) {
+                        onIngresar(usuario, clave)
                     }
                 },
+                enabled = !ingresando,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Ingresar")

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -17,17 +19,21 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.data.local.Rol
 
 /**
  * Menu principal.
  *
- * Punto de reparto hacia los modulos del caso. En esta primera entrega solo
- * el modulo de Solicitudes esta desarrollado; el resto queda visible pero
- * desactivado para dejar claro el alcance entregado.
+ * El menu de cliente es la base. Tecnico y administrador ven ademas las
+ * opciones propias de su rol.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(
+    nombreUsuario: String,
+    rol: Rol,
+    onIrAPanelTecnico: () -> Unit,
+    onIrAAdministrarRoles: () -> Unit,
     onIrASolicitudes: () -> Unit,
     onIrAPosts: () -> Unit,
     onIrAHistorial: () -> Unit,
@@ -41,9 +47,12 @@ fun MenuScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+
+            Text("$nombreUsuario · ${rol.etiqueta}")
 
             Text(
                 text = "Modulos disponibles",
@@ -64,19 +73,29 @@ fun MenuScreen(
                 Text("Posts (API REST)")
             }
 
-            OutlinedButton(
-                onClick = {},
-                enabled = false,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Seguimiento (proxima entrega)")
-            }
-
             Button(
                 onClick = onIrAHistorial,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Historial")
+            }
+
+            if (rol.vePanelTecnico) {
+                Button(
+                    onClick = onIrAPanelTecnico,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Panel técnico")
+                }
+            }
+
+            if (rol.administraRoles) {
+                Button(
+                    onClick = onIrAAdministrarRoles,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Administrar roles")
+                }
             }
 
             Spacer(Modifier.height(24.dp))
